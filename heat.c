@@ -47,6 +47,8 @@ void calculate_heat(double **grid, double **new_grid, int grid_size,
       while (j < grid_size) {
         if (i == grid_size / 2 && j == grid_size / 2) {
           new_grid[i][j] = grid[i][j]; // keep the hot spot
+        } else if (i == 1 && j == 1) {
+          new_grid[i][j] = grid[i][j]; // keep the cold spot
         } else if (i > 0 && i < grid_size - 1 && j > 0 && j < grid_size - 1) {
           new_grid[i][j] = (grid[i - 1][j] + grid[i + 1][j] + grid[i][j - 1] +
                             grid[i][j + 1]) /
@@ -107,6 +109,8 @@ int main(int argc, char *argv[]) {
 
   // Initialize the grid with a hot spot
   grid[grid_size / 2][grid_size / 2] = 100.0; // Set a hot spot
+  // Cold spot
+  grid[1][1] = -100.0; // Set a cold spot
 
   printf("Grid initialized\n");
 

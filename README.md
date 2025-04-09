@@ -1,57 +1,68 @@
 # Heat Diffusion Simulation
 
-This project simulates heat diffusion on a 2D grid. It demonstrates how heat spreads from a hot spot to surrounding areas over time.
+This project simulates heat diffusion on a 2D grid, either sequentially or in parallel using MPI. It shows how heat propagates from a hot spot and a cold spot over time.
 
 ## Features
 
-- Simulates heat diffusion using a simple averaging algorithm
-- Visualizes the heat distribution with color-coded output in the terminal
-- Configurable grid size and simulation duration
-- Uses MPI for potential parallel processing capabilities
+- Simulates heat diffusion with a simple 2D stencil algorithm
+- Color-coded terminal output (Red = hot, Blue = cold, Green = neutral)
+- Configurable grid size and tick count
+- Parallelized with MPI for distributed computation
+- Sequential and parallel versions included
 
 ## Requirements
 
-- C compiler (gcc/clang)
-- MPI library (for parallel processing)
+- `mpicc` (e.g., OpenMPI or MPICH)
+- POSIX-compatible system (e.g., Linux/macOS)
 
 ## Building
 
-To build the project, simply run:
+To build both versions:
 
 ```bash
 make
 ```
 
-This will compile the `heat.c` file and create an executable named `heat`.
+To build individually:
+
+```bash
+make heat        # Sequential version
+make heat_mpi    # MPI version
+```
+
+To clean:
+
+```bash
+make clean
+```
 
 ## Usage
 
-Run the simulation with:
-
+Sequential version:
 ```bash
 ./heat [grid_size] [max_ticks]
 ```
-
-Where:
-- `grid_size`: Size of the grid (default: 10)
-- `max_ticks`: Number of simulation steps (default: 10)
 
 Example:
 ```bash
 ./heat 20 50
 ```
 
-This will run the simulation on a 20x20 grid for 50 time steps.
+MPI version:
+```bash
+mpirun -np [num_ranks] ./heat_mpi [grid_size] [max_ticks]
+```
+*grid_size must be divisible by num_ranks*
+
+Example:
+```bash
+mpirun -np 2 ./heat_mpi 10 20
+```
 
 ## How It Works
 
-The simulation places a hot spot in the center of the grid. In each time step, the temperature of each cell is updated to be the average of its four neighboring cells (up, down, left, right). The hot spot maintains its temperature throughout the simulation.
-
-The output uses color coding:
-- Red: Hot areas (positive values)
-- Blue: Cold areas (negative values)
-- Green: Neutral areas (zero)
+Each tick updates the grid based on neighbor averaging (ignoring corners). Ghost rows are used in the MPI version to exchange boundary data between ranks.
 
 ## License
 
-This project is open source and available under the MIT License.
+This project is open source.
